@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movies App</title>
+    <style>
+        .image-center {
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Movies App</h1>
+    <form id="movie-form">
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" required>
+        <label for="rating">Rating:</label>
+        <input type="number" id="rating" name="rating" min="0" max="10" required>
+        <button type="submit">Add Movie</button>
+    </form>
+    <div>
+        <button id="sort-title">Sort by Title</button>
+        <button id="sort-rating">Sort by Rating</button>
+    </div>
+    <ul id="movie-list"></ul>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <Script>
+        $(document).ready(function() {
+            $('#movie-form').on('submit', function(event) {
+                event.preventDefault();
+        
+                let title = $('#title').val();
+                let rating = $('#rating').val();
+        
+                if (title.length < 2) {
+                    alert('Title must be at least 2 characters long.');
+                    return;
+                }
+        
+                if (rating < 0 || rating > 10) {
+                    alert('Rating must be between 0 and 10.');
+                    return;
+                }
+        
+                let movieItem = $('<li>').text(`Title: ${title}, Rating: ${rating}`);
+                let removeButton = $('<button>').text('Remove').on('click', function() {
+                    $(this).parent().remove();
+                });
+        
+                movieItem.append(removeButton);
+                $('#movie-list').append(movieItem);
+        
+                $('#title').val('');
+                $('#rating').val('');
+            });
+        
+            $('#sort-title').on('click', function() {
+                let movies = $('#movie-list li').get();
+                movies.sort(function(a, b) {
+                    let titleA = $(a).text().toUpperCase();
+                    let titleB = $(b).text().toUpperCase();
+                    return titleA.localeCompare(titleB);
+                });
+                $('#movie-list').empty().append(movies);
+            });
+        
+            $('#sort-rating').on('click', function() {
+                let movies = $('#movie-list li').get();
+                movies.sort(function(a, b) {
+                    let ratingA = parseFloat($(a).text().match(/Rating: (\d+(\.\d+)?)/)[1]);
+                    let ratingB = parseFloat($(b).text().match(/Rating: (\d+(\.\d+)?)/)[1]);
+                    return ratingA - ratingB;
+                });
+                $('#movie-list').empty().append(movies);
+            });
+        });
+        
+    </Script>
+    <script src="app.js"></script>
+</body>
+</html>
